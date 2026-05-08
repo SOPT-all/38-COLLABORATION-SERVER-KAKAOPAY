@@ -1,0 +1,2 @@
+# 38-COLLABORATION-SERVER-KAKAOPAY
+LET'S SOPT 38기 합동세미나 안드로이드 3조 카카오페이
