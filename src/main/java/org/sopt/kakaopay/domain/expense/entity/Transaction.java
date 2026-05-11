@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Entity
-@Table(name = "transaction")
+@Table(name = "pay_transaction")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Transaction {
 
