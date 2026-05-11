@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/expense")
+@RequestMapping("/api/v1/expenses")
 @RequiredArgsConstructor
 public class ExpenseController {
 

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/asset")
+@RequestMapping("/api/v1/assets")
 @RequiredArgsConstructor
 public class AssetController {
 
