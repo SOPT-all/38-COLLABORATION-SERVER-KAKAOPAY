@@ -31,10 +31,10 @@ public class Transaction {
     private LocalDateTime transactedAt;
 
     @Column(nullable = false)
-    private Boolean isFixedExpense;
+    private boolean isFixedExpense;
 
     @Column(nullable = false)
-    private Boolean includeInTotal;
+    private boolean includeInTotal;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
