@@ -95,8 +95,10 @@ public class ExpenseService {
     }
 
     public Long getMonthlyTotalExpense() {
-        LocalDate now = LocalDate.now();
-        return transactionRepository.sumMonthlyExpense(now.getYear(), now.getMonthValue());
+        YearMonth currentMonth = YearMonth.now();
+        LocalDateTime startDate = currentMonth.atDay(1).atStartOfDay();
+        LocalDateTime endDate = currentMonth.atEndOfMonth().plusDays(1).atStartOfDay();
+        return transactionRepository.sumMonthlyExpense(startDate, endDate);
     }
 }
 
