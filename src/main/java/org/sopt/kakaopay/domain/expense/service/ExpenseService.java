@@ -13,10 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.*;
 import java.time.format.DateTimeParseException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -61,7 +58,7 @@ public class ExpenseService {
 
 
         // 카테고리 리스트 조립
-        Set<PaymentCategory> allCategories = new HashSet<>();
+        Set<PaymentCategory> allCategories = EnumSet.noneOf(PaymentCategory.class);
         allCategories.addAll(currentAmounts.keySet());
         allCategories.addAll(prevAmounts.keySet());
 
@@ -89,12 +86,12 @@ public class ExpenseService {
         }
     }
 
-        private Map<PaymentCategory, Long> toCategoryAmountMap(List<ExpenseCategoryAmountDto> dtos) {
-            return dtos.stream()
-                    .collect(Collectors.toMap(
-                            ExpenseCategoryAmountDto::paymentCategory,
-                            ExpenseCategoryAmountDto::amount
-                    ));
+    private Map<PaymentCategory, Long> toCategoryAmountMap(List<ExpenseCategoryAmountDto> dtos) {
+        return dtos.stream()
+                .collect(Collectors.toMap(
+                        ExpenseCategoryAmountDto::paymentCategory,
+                        ExpenseCategoryAmountDto::amount
+                ));
         }
     }
 
