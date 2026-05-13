@@ -24,6 +24,7 @@ import java.time.LocalDate;
 @Transactional(readOnly = true)
 public class ExpenseService {
     private final PaymentRepository paymentRepository;
+    private final TransactionRepository transactionRepository;
 
     public ExpenseAnalysisResponse getExpenseAnalysis(String yearMonthStr) {
         YearMonth yearMonth = parseYearMonth(yearMonthStr);
@@ -81,7 +82,6 @@ public class ExpenseService {
                 .build();
     }
 
-
     private YearMonth parseYearMonth(String yearMonthStr) {
         try {
             return YearMonth.parse(yearMonthStr);
@@ -90,20 +90,13 @@ public class ExpenseService {
         }
     }
 
-    private final TransactionRepository transactionRepository;
+    private Map<PaymentCategory, Long> toCategoryAmountMap(List<ExpenseCategoryAmountDto> dtos) {
+        return dtos.stream().collect(Collectors.toMap(ExpenseCategoryAmountDto::paymentCategory, ExpenseCategoryAmountDto::amount));
+    }
 
     public Long getMonthlyTotalExpense() {
         LocalDate now = LocalDate.now();
         return transactionRepository.sumMonthlyExpense(now.getYear(), now.getMonthValue());
     }
 }
-
-    private Map<PaymentCategory, Long> toCategoryAmountMap(List<ExpenseCategoryAmountDto> dtos) {
-        return dtos.stream()
-                .collect(Collectors.toMap(
-                        ExpenseCategoryAmountDto::paymentCategory,
-                        ExpenseCategoryAmountDto::amount
-                ));
-        }
-    }
 
