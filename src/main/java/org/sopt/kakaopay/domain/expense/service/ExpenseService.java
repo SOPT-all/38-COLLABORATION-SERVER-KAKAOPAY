@@ -24,14 +24,15 @@ public class ExpenseService {
 
     public ExpenseAnalysisResponse getExpenseAnalysis(String yearMonthStr) {
         YearMonth yearMonth = parseYearMonth(yearMonthStr);
+        LocalDate today = LocalDate.now();
+        YearMonth currentYearMonth = YearMonth.from(today);
 
-        if (yearMonth.isAfter(YearMonth.now())) {
+        if (yearMonth.isAfter(currentYearMonth)) {
             throw new BusinessException(ExpenseErrorCode.EXPENSE_ANALYSIS_INVALID_YEAR_MONTH);
         }
 
         // 당월 날짜 범위
-        LocalDate today = LocalDate.now();
-        LocalDate currentEndDate = yearMonth.equals(YearMonth.now())
+        LocalDate currentEndDate = yearMonth.equals(currentYearMonth)
                 ? today
                 : yearMonth.atEndOfMonth();
         LocalDateTime currentStart = yearMonth.atDay(1).atStartOfDay();
