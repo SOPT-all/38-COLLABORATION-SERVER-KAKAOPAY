@@ -29,9 +29,6 @@ public class Payment {
     private String brandName;
 
     @Column
-    private String brandLogoUrl;
-
-    @Column
     private String orderDescription;
 
     @Column(length = 50)
@@ -39,11 +36,10 @@ public class Payment {
 
     @Builder
     private Payment(Transaction transaction, PaymentCategory paymentCategory, String brandName,
-                    String brandLogoUrl, String orderDescription, String orderNumber) {
+                    String orderDescription, String orderNumber) {
         this.transaction = transaction;
         this.paymentCategory = paymentCategory;
         this.brandName = brandName;
-        this.brandLogoUrl = brandLogoUrl;
         this.orderDescription = orderDescription;
         this.orderNumber = orderNumber;
     }
