@@ -44,14 +44,16 @@ public class ExpenseService {
             throw new BusinessException(ExpenseErrorCode.EXPENSE_FUTURE_YEAR_MONTH);
         }
 
+        LocalDate today = LocalDate.now();
+        LocalDate lastDay = yearMonth.equals(YearMonth.now()) ? today : yearMonth.atEndOfMonth();
         LocalDateTime startDate = yearMonth.atDay(1).atStartOfDay();
-        LocalDateTime endDate = yearMonth.atEndOfMonth().plusDays(1).atStartOfDay();
+        LocalDateTime endDate = lastDay.plusDays(1).atStartOfDay();
 
         // 현재 월 트랜잭션 조회
         List<Transaction> transactions = transactionRepository
                 .findAllByPeriod(startDate, endDate);
 
-        // Payment, Transfer 조회 (N+1 방지)
+        // Payment, Transfer 조회
         Map<Long, Payment> paymentMap = paymentRepository.findByTransactionIn(transactions).stream()
                 .collect(Collectors.toMap(p -> p.getTransaction().getId(), p -> p));
         Map<Long, Transfer> transferMap = transferRepository.findByTransactionIn(transactions).stream()
