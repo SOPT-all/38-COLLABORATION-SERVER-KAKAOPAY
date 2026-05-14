@@ -42,7 +42,7 @@ public class ExpenseService {
     private static final String[] DAY_OF_WEEK_KO = {"", "월", "화", "수", "목", "금", "토", "일"};
 
     public ExpenseResponse getExpense(String yearMonthStr) {
-        YearMonth yearMonth = parseYearMonth(yearMonthStr, ExpenseErrorCode.EXPENSE_INVALID_YEAR_MONTH_FORMAT);
+        YearMonth yearMonth = parseYearMonth(yearMonthStr);
 
         if (yearMonth.isAfter(YearMonth.now())) {
             throw new BusinessException(ExpenseErrorCode.EXPENSE_FUTURE_YEAR_MONTH);
@@ -160,7 +160,7 @@ public class ExpenseService {
     }
 
     public ExpenseAnalysisResponse getExpenseAnalysis(String yearMonthStr) {
-        YearMonth yearMonth = parseYearMonth(yearMonthStr, ExpenseErrorCode.EXPENSE_INVALID_YEAR_MONTH_FORMAT);
+        YearMonth yearMonth = parseYearMonth(yearMonthStr);
         LocalDate today = LocalDate.now();
         YearMonth currentYearMonth = YearMonth.from(today);
 
@@ -215,11 +215,11 @@ public class ExpenseService {
                 .build();
     }
 
-    private YearMonth parseYearMonth(String yearMonthStr, ExpenseErrorCode errorCode) {
+    private YearMonth parseYearMonth(String yearMonthStr) {
         try {
             return YearMonth.parse(yearMonthStr);
         } catch (DateTimeParseException e) {
-            throw new BusinessException(errorCode);
+            throw new BusinessException(ExpenseErrorCode.EXPENSE_INVALID_YEAR_MONTH_FORMAT);
         }
     }
 
