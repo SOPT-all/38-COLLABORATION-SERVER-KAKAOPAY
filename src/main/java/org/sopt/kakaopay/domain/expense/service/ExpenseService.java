@@ -12,8 +12,6 @@ import org.sopt.kakaopay.domain.expense.entity.SplitPay;
 import org.sopt.kakaopay.domain.expense.entity.Transaction;
 import org.sopt.kakaopay.domain.expense.dto.response.ExpenseResponse;
 import org.sopt.kakaopay.domain.expense.dto.response.TransactionDetailResponse;
-import org.sopt.kakaopay.domain.expense.entity.Payment;
-import org.sopt.kakaopay.domain.expense.entity.Transaction;
 import org.sopt.kakaopay.domain.expense.entity.Transfer;
 import org.sopt.kakaopay.domain.expense.enums.PaymentCategory;
 import org.sopt.kakaopay.domain.expense.enums.TransactionType;
@@ -22,7 +20,6 @@ import org.sopt.kakaopay.domain.expense.repository.SplitPayRepository;
 import org.sopt.kakaopay.domain.expense.repository.TransactionRepository;
 import org.sopt.kakaopay.global.exception.BusinessException;
 import org.sopt.kakaopay.domain.expense.repository.TransferRepository;
-import org.sopt.kakaopay.global.exception.BusinessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
