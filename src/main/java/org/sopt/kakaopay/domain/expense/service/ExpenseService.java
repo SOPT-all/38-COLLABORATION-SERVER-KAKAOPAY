@@ -5,10 +5,15 @@ import org.sopt.kakaopay.domain.expense.code.ExpenseErrorCode;
 import org.sopt.kakaopay.domain.expense.dto.ExpenseCategoryAmountDto;
 import org.sopt.kakaopay.domain.expense.dto.response.ExpenseAnalysisResponse;
 import org.sopt.kakaopay.domain.expense.dto.response.ExpenseCategoryResponse;
+import org.sopt.kakaopay.domain.expense.dto.response.ExpenseDetailResponse;
+import org.sopt.kakaopay.domain.expense.entity.Payment;
+import org.sopt.kakaopay.domain.expense.entity.SplitPay;
+import org.sopt.kakaopay.domain.expense.entity.Transaction;
 import org.sopt.kakaopay.domain.expense.enums.PaymentCategory;
 import org.sopt.kakaopay.domain.expense.repository.PaymentRepository;
-import org.sopt.kakaopay.global.exception.BusinessException;
+import org.sopt.kakaopay.domain.expense.repository.SplitPayRepository;
 import org.sopt.kakaopay.domain.expense.repository.TransactionRepository;
+import org.sopt.kakaopay.global.exception.BusinessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,13 +22,12 @@ import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import java.time.LocalDate;
-
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ExpenseService {
     private final PaymentRepository paymentRepository;
+    private final SplitPayRepository splitPayRepository;
     private final TransactionRepository transactionRepository;
 
     public ExpenseAnalysisResponse getExpenseAnalysis(String yearMonthStr) {
@@ -82,6 +86,32 @@ public class ExpenseService {
                 .build();
     }
 
+    public ExpenseDetailResponse getExpenseDetail(Long transactionId) {
+        Payment payment = paymentRepository.findByTransactionId(transactionId)
+                .orElseThrow(() -> new BusinessException(ExpenseErrorCode.EXPENSE_DETAIL_NOT_FOUND));
+
+        Transaction transaction = payment.getTransaction();
+
+        Optional<SplitPay> splitPay = splitPayRepository.findByPayment(payment);
+
+        Long totalAmount = splitPay
+                .map(SplitPay::getTotalAmount)
+                .orElse(transaction.getAmount());
+
+        int participantCount = splitPay
+                .map(SplitPay::getParticipantsCount)
+                .orElse(1);
+
+        return ExpenseDetailResponse.of(transaction, payment, totalAmount, participantCount);
+    }
+
+    public Long getMonthlyTotalExpense() {
+        YearMonth currentMonth = YearMonth.now();
+        LocalDateTime startDate = currentMonth.atDay(1).atStartOfDay();
+        LocalDateTime endDate = currentMonth.atEndOfMonth().plusDays(1).atStartOfDay();
+        return transactionRepository.sumMonthlyExpense(startDate, endDate);
+    }
+
     private YearMonth parseYearMonth(String yearMonthStr) {
         try {
             return YearMonth.parse(yearMonthStr);
@@ -91,14 +121,11 @@ public class ExpenseService {
     }
 
     private Map<PaymentCategory, Long> toCategoryAmountMap(List<ExpenseCategoryAmountDto> dtos) {
-        return dtos.stream().collect(Collectors.toMap(ExpenseCategoryAmountDto::paymentCategory, ExpenseCategoryAmountDto::amount));
-    }
-
-    public Long getMonthlyTotalExpense() {
-        YearMonth currentMonth = YearMonth.now();
-        LocalDateTime startDate = currentMonth.atDay(1).atStartOfDay();
-        LocalDateTime endDate = currentMonth.atEndOfMonth().plusDays(1).atStartOfDay();
-        return transactionRepository.sumMonthlyExpense(startDate, endDate);
+        return dtos.stream()
+                .collect(Collectors.toMap(
+                        ExpenseCategoryAmountDto::paymentCategory,
+                        ExpenseCategoryAmountDto::amount
+                ));
     }
 }
 

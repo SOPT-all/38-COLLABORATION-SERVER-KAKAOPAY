@@ -29,7 +29,17 @@ public final class ExpenseApiResponses {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
-
     public @interface GetExpenseAnalysis {}
 
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "지출 상세 내역 조회 성공"),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "해당 지출 상세 내역을 찾을 수 없습니다.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
+    public @interface GetExpenseDetail {}
 }

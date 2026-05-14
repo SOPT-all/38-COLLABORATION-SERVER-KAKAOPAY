@@ -6,13 +6,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.sopt.kakaopay.domain.expense.code.ExpenseSuccessCode;
 import org.sopt.kakaopay.domain.expense.dto.response.ExpenseAnalysisResponse;
+import org.sopt.kakaopay.domain.expense.dto.response.ExpenseDetailResponse;
 import org.sopt.kakaopay.domain.expense.service.ExpenseService;
 import org.sopt.kakaopay.global.response.BaseResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @Tag(name = "Expense", description = "지출 관련 API")
@@ -34,6 +32,21 @@ public class ExpenseController {
                 BaseResponse.success(
                         ExpenseSuccessCode.GET_EXPENSE_ANALYSIS,
                         expenseService.getExpenseAnalysis(yearMonth)
+                )
+        );
+    }
+
+    @Operation(summary = "지출 상세 내역 조회", description = "거래 ID로 지출 상세 내역을 조회합니다.")
+    @ExpenseApiResponses.GetExpenseDetail
+    @GetMapping("/{transactionId}")
+    public ResponseEntity<BaseResponse<ExpenseDetailResponse>> getExpenseDetail(
+            @Parameter(description = "거래 ID", example = "1")
+            @PathVariable Long transactionId
+    ) {
+        return ResponseEntity.ok(
+                BaseResponse.success(
+                        ExpenseSuccessCode.GET_EXPENSE_DETAIL,
+                        expenseService.getExpenseDetail(transactionId)
                 )
         );
     }

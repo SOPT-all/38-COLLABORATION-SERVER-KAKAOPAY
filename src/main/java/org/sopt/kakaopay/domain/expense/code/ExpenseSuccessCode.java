@@ -10,7 +10,10 @@ import org.springframework.http.HttpStatus;
 public enum ExpenseSuccessCode implements SuccessCode {
 
     GET_EXPENSE(HttpStatus.OK, "EXP_200", "지출 내역 조회에 성공했습니다."),
-    GET_EXPENSE_ANALYSIS(HttpStatus.OK, "EXP_ANALYSIS_200", "상세 소비 분석 조회에 성공했습니다.");
+
+    GET_EXPENSE_ANALYSIS(HttpStatus.OK, "EXP_ANALYSIS_200", "상세 소비 분석 조회에 성공했습니다."),
+
+    GET_EXPENSE_DETAIL(HttpStatus.OK, "EXP_DETAIL_200", "성공적으로 지출 상세 내역을 조회했습니다.");
 
 
     private final HttpStatus httpStatus;

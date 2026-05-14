@@ -8,19 +8,21 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
+    Optional<Payment> findByTransactionId(Long transactionId);
+
     @Query("""                                                                                                                                                                                                                       
             SELECT new org.sopt.kakaopay.domain.expense.dto.ExpenseCategoryAmountDto(
             p.paymentCategory, SUM(t.amount)
             )
             FROM Payment p JOIN p.transaction t
             WHERE t.transactedAt >= :start
-            AND t.transactedAt < :end
-            AND t.includeInTotal = true
+              AND t.transactedAt < :end
+              AND t.includeInTotal = true
             GROUP BY p.paymentCategory
             """)
-
     List<ExpenseCategoryAmountDto> findCategoryAmountsByPeriod(
             @Param("start") LocalDateTime start,
             @Param("end") LocalDateTime end
