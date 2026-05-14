@@ -8,7 +8,7 @@ public record ExpenseResponse(
         Long totalExpense,
         Long totalIncome,
         Long fixedExpense,
-        Long previousMonthDiff,
+        Long previousMonthTotal,
         List<DailyTransactionResponse> dailyTransactions
 ) {
 }

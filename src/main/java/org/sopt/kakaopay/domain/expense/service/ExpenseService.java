@@ -80,12 +80,11 @@ public class ExpenseService {
         LocalDateTime prevStart = prevMonth.atDay(1).atStartOfDay();
         LocalDateTime prevEnd = prevMonth.atEndOfMonth().plusDays(1).atStartOfDay();
         List<Transaction> prevTransactions = transactionRepository.findAllByPeriod(prevStart, prevEnd);
-        long prevTotalExpense = prevTransactions.stream()
-                .filter(t -> isExpenseType(t.getTransactionType()) && t.isIncludeInTotal())
+
+        long previousMonthTotal = prevTransactions.stream()
+                .filter(t1 -> isExpenseType(t1.getTransactionType()) && t1.isIncludeInTotal())
                 .mapToLong(Transaction::getAmount)
                 .sum();
-
-        long previousMonthDiff = totalExpense - prevTotalExpense;
 
         // 날짜별 그룹핑
         List<DailyTransactionResponse> dailyTransactions = transactions.stream()
@@ -126,7 +125,7 @@ public class ExpenseService {
                 totalExpense,
                 totalIncome,
                 fixedExpense,
-                previousMonthDiff,
+                previousMonthTotal,
                 dailyTransactions
         );
     }
@@ -157,7 +156,7 @@ public class ExpenseService {
     }
 
     public ExpenseAnalysisResponse getExpenseAnalysis(String yearMonthStr) {
-        YearMonth yearMonth = parseYearMonth(yearMonthStr, ExpenseErrorCode.EXPENSE_ANALYSIS_INVALID_YEAR_MONTH);
+        YearMonth yearMonth = parseYearMonth(yearMonthStr, ExpenseErrorCode.EXPENSE_INVALID_YEAR_MONTH_FORMAT);
         LocalDate today = LocalDate.now();
         YearMonth currentYearMonth = YearMonth.from(today);
 
