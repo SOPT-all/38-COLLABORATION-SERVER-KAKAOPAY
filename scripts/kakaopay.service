@@ -1,0 +1,14 @@
+[Unit]
+Description=Kakaopay Spring Boot Application
+After=network.target
+
+[Service]
+User=ubuntu
+EnvironmentFile=/home/ubuntu/.env
+ExecStart=/usr/bin/java -jar /home/ubuntu/app/kakaopay.jar
+SuccessExitStatus=143
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

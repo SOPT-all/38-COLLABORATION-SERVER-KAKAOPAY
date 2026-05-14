@@ -12,6 +12,7 @@ import org.sopt.kakaopay.domain.expense.entity.Transaction;
 import org.sopt.kakaopay.domain.expense.enums.PaymentCategory;
 import org.sopt.kakaopay.domain.expense.repository.PaymentRepository;
 import org.sopt.kakaopay.domain.expense.repository.SplitPayRepository;
+import org.sopt.kakaopay.domain.expense.repository.TransactionRepository;
 import org.sopt.kakaopay.global.exception.BusinessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 public class ExpenseService {
     private final PaymentRepository paymentRepository;
     private final SplitPayRepository splitPayRepository;
+    private final TransactionRepository transactionRepository;
 
     public ExpenseAnalysisResponse getExpenseAnalysis(String yearMonthStr) {
         YearMonth yearMonth = parseYearMonth(yearMonthStr);
@@ -101,6 +103,13 @@ public class ExpenseService {
                 .orElse(1);
 
         return ExpenseDetailResponse.of(transaction, payment, totalAmount, participantCount);
+    }
+
+    public Long getMonthlyTotalExpense() {
+        YearMonth currentMonth = YearMonth.now();
+        LocalDateTime startDate = currentMonth.atDay(1).atStartOfDay();
+        LocalDateTime endDate = currentMonth.atEndOfMonth().plusDays(1).atStartOfDay();
+        return transactionRepository.sumMonthlyExpense(startDate, endDate);
     }
 
     private YearMonth parseYearMonth(String yearMonthStr) {
