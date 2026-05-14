@@ -2,6 +2,7 @@ package org.sopt.kakaopay.domain.expense.repository;
 
 import org.sopt.kakaopay.domain.expense.dto.ExpenseCategoryAmountDto;
 import org.sopt.kakaopay.domain.expense.entity.Payment;
+import org.sopt.kakaopay.domain.expense.entity.Transaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,6 +11,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
+
+    List<Payment> findByTransactionIn(List<Transaction> transactions);
+
     @Query("""                                                                                                                                                                                                                       
             SELECT new org.sopt.kakaopay.domain.expense.dto.ExpenseCategoryAmountDto(
             p.paymentCategory, SUM(t.amount)
