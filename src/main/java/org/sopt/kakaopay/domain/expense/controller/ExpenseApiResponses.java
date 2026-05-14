@@ -20,7 +20,7 @@ public final class ExpenseApiResponses {
             @ApiResponse(responseCode = "200", description = "지출 내역 조회 성공"),
             @ApiResponse(
                     responseCode = "400",
-                    description = "yearMonth 형식이 올바르지 않습니다.",
+                    description = "현재 연월 이후 조회 불가 / yearMonth 형식 오류",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })

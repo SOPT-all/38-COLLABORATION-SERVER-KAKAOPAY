@@ -38,7 +38,12 @@ public class ExpenseService {
     private static final String[] DAY_OF_WEEK_KO = {"", "월", "화", "수", "목", "금", "토", "일"};
 
     public ExpenseResponse getExpense(String yearMonthStr) {
-        YearMonth yearMonth = parseYearMonth(yearMonthStr);
+        YearMonth yearMonth = parseYearMonth(yearMonthStr, ExpenseErrorCode.EXPENSE_INVALID_YEAR_MONTH_FORMAT);
+
+        if (yearMonth.isAfter(YearMonth.now())) {
+            throw new BusinessException(ExpenseErrorCode.EXPENSE_FUTURE_YEAR_MONTH);
+        }
+
         LocalDateTime startDate = yearMonth.atDay(1).atStartOfDay();
         LocalDateTime endDate = yearMonth.atEndOfMonth().plusDays(1).atStartOfDay();
 
@@ -150,12 +155,12 @@ public class ExpenseService {
     }
 
     public ExpenseAnalysisResponse getExpenseAnalysis(String yearMonthStr) {
-        YearMonth yearMonth = parseYearMonth(yearMonthStr);
+        YearMonth yearMonth = parseYearMonth(yearMonthStr, ExpenseErrorCode.EXPENSE_ANALYSIS_INVALID_YEAR_MONTH);
         LocalDate today = LocalDate.now();
         YearMonth currentYearMonth = YearMonth.from(today);
 
         if (yearMonth.isAfter(currentYearMonth)) {
-            throw new BusinessException(ExpenseErrorCode.EXPENSE_ANALYSIS_INVALID_YEAR_MONTH);
+            throw new BusinessException(ExpenseErrorCode.EXPENSE_FUTURE_YEAR_MONTH);
         }
 
         // 당월 날짜 범위
@@ -205,11 +210,11 @@ public class ExpenseService {
                 .build();
     }
 
-    private YearMonth parseYearMonth(String yearMonthStr) {
+    private YearMonth parseYearMonth(String yearMonthStr, ExpenseErrorCode errorCode) {
         try {
             return YearMonth.parse(yearMonthStr);
         } catch (DateTimeParseException e) {
-            throw new BusinessException(ExpenseErrorCode.EXPENSE_ANALYSIS_INVALID_YEAR_MONTH);
+            throw new BusinessException(errorCode);
         }
     }
 
