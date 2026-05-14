@@ -29,7 +29,6 @@ public final class ExpenseApiResponses {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
-
     public @interface GetExpenseAnalysis {}
 
     @Target(ElementType.METHOD)
@@ -42,6 +41,5 @@ public final class ExpenseApiResponses {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
-
     public @interface GetExpenseDetail {}
 }

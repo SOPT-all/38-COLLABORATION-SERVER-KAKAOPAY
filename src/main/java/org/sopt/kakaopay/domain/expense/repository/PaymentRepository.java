@@ -19,8 +19,8 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
             )
             FROM Payment p JOIN p.transaction t
             WHERE t.transactedAt >= :start
-            AND t.transactedAt < :end
-            AND t.includeInTotal = true
+              AND t.transactedAt < :end
+              AND t.includeInTotal = true
             GROUP BY p.paymentCategory
             """)
     List<ExpenseCategoryAmountDto> findCategoryAmountsByPeriod(

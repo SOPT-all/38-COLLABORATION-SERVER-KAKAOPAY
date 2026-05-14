@@ -100,18 +100,18 @@ public class ExpenseService {
                 .map(SplitPay::getParticipantsCount)
                 .orElse(1);
 
-        return new ExpenseDetailResponse(
-                transaction.getId(),
-                payment.getOrderDescription(),
-                transaction.getTransactionMethod(),
-                transaction.getAmount(),
-                totalAmount,
-                participantCount,
-                payment.getOrderNumber(),
-                transaction.getTransactedAt(),
-                payment.getPaymentCategory(),
-                transaction.isIncludeInTotal()
-        );
+        return ExpenseDetailResponse.builder()
+                .id(transaction.getId())
+                .expenseName(payment.getOrderDescription())
+                .paymentMethod(transaction.getTransactionMethod())
+                .splitAmount(transaction.getAmount())
+                .totalAmount(totalAmount)
+                .participantCount(participantCount)
+                .orderNumber(payment.getOrderNumber())
+                .orderedAt(transaction.getTransactedAt())
+                .category(payment.getPaymentCategory())
+                .includeInTotal(transaction.isIncludeInTotal())
+                .build();
     }
 
     private YearMonth parseYearMonth(String yearMonthStr) {

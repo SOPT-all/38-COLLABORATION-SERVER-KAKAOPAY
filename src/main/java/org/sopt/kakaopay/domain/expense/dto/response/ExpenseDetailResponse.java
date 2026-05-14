@@ -1,10 +1,12 @@
 package org.sopt.kakaopay.domain.expense.dto.response;
 
+import lombok.Builder;
 import org.sopt.kakaopay.domain.expense.enums.PaymentCategory;
 import org.sopt.kakaopay.domain.expense.enums.TransactionMethod;
 
 import java.time.LocalDateTime;
 
+@Builder
 public record ExpenseDetailResponse(
         Long id,
         String expenseName,
