@@ -28,10 +28,10 @@ public class Payment {
     @Column(length = 20)
     private String brandName;
 
-    @Column
+    @Column(nullable = false)
     private String orderDescription;
 
-    @Column(length = 50)
+    @Column(nullable = false, length = 50)
     private String orderNumber;
 
     @Builder

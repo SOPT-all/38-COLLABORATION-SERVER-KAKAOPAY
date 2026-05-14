@@ -9,8 +9,10 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
+    Optional<Payment> findByTransactionId(Long transactionId);
 
     List<Payment> findByTransactionIn(List<Transaction> transactions);
 
@@ -20,11 +22,10 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
             )
             FROM Payment p JOIN p.transaction t
             WHERE t.transactedAt >= :start
-            AND t.transactedAt < :end
-            AND t.includeInTotal = true
+              AND t.transactedAt < :end
+              AND t.includeInTotal = true
             GROUP BY p.paymentCategory
             """)
-
     List<ExpenseCategoryAmountDto> findCategoryAmountsByPeriod(
             @Param("start") LocalDateTime start,
             @Param("end") LocalDateTime end
