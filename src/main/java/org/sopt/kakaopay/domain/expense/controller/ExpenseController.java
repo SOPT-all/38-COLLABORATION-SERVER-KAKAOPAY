@@ -38,15 +38,15 @@ public class ExpenseController {
 
     @Operation(summary = "지출 상세 내역 조회", description = "거래 ID로 지출 상세 내역을 조회합니다.")
     @ExpenseApiResponses.GetExpenseDetail
-    @GetMapping("/{expenseId}")
+    @GetMapping("/{transactionId}")
     public ResponseEntity<BaseResponse<ExpenseDetailResponse>> getExpenseDetail(
             @Parameter(description = "거래 ID", example = "1")
-            @PathVariable Long expenseId
+            @PathVariable Long transactionId
     ) {
         return ResponseEntity.ok(
                 BaseResponse.success(
                         ExpenseSuccessCode.GET_EXPENSE_DETAIL,
-                        expenseService.getExpenseDetail(expenseId)
+                        expenseService.getExpenseDetail(transactionId)
                 )
         );
     }

@@ -84,8 +84,8 @@ public class ExpenseService {
                 .build();
     }
 
-    public ExpenseDetailResponse getExpenseDetail(Long expenseId) {
-        Payment payment = paymentRepository.findByTransactionId(expenseId)
+    public ExpenseDetailResponse getExpenseDetail(Long transactionId) {
+        Payment payment = paymentRepository.findByTransactionId(transactionId)
                 .orElseThrow(() -> new BusinessException(ExpenseErrorCode.EXPENSE_DETAIL_NOT_FOUND));
 
         Transaction transaction = payment.getTransaction();
