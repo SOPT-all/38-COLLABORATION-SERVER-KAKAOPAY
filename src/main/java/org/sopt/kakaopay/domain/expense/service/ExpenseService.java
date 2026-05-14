@@ -5,8 +5,13 @@ import org.sopt.kakaopay.domain.expense.code.ExpenseErrorCode;
 import org.sopt.kakaopay.domain.expense.dto.ExpenseCategoryAmountDto;
 import org.sopt.kakaopay.domain.expense.dto.response.ExpenseAnalysisResponse;
 import org.sopt.kakaopay.domain.expense.dto.response.ExpenseCategoryResponse;
+import org.sopt.kakaopay.domain.expense.dto.response.ExpenseDetailResponse;
+import org.sopt.kakaopay.domain.expense.entity.Payment;
+import org.sopt.kakaopay.domain.expense.entity.SplitPay;
+import org.sopt.kakaopay.domain.expense.entity.Transaction;
 import org.sopt.kakaopay.domain.expense.enums.PaymentCategory;
 import org.sopt.kakaopay.domain.expense.repository.PaymentRepository;
+import org.sopt.kakaopay.domain.expense.repository.SplitPayRepository;
 import org.sopt.kakaopay.global.exception.BusinessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +26,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class ExpenseService {
     private final PaymentRepository paymentRepository;
+    private final SplitPayRepository splitPayRepository;
 
     public ExpenseAnalysisResponse getExpenseAnalysis(String yearMonthStr) {
         YearMonth yearMonth = parseYearMonth(yearMonthStr);
@@ -78,6 +84,35 @@ public class ExpenseService {
                 .build();
     }
 
+    public ExpenseDetailResponse getExpenseDetail(Long expenseId) {
+        Payment payment = paymentRepository.findByTransactionId(expenseId)
+                .orElseThrow(() -> new BusinessException(ExpenseErrorCode.EXPENSE_DETAIL_NOT_FOUND));
+
+        Transaction transaction = payment.getTransaction();
+
+        Optional<SplitPay> splitPay = splitPayRepository.findByPayment(payment);
+
+        Long totalAmount = splitPay
+                .map(SplitPay::getTotalAmount)
+                .orElse(transaction.getAmount());
+
+        int participantCount = splitPay
+                .map(SplitPay::getParticipantsCount)
+                .orElse(1);
+
+        return new ExpenseDetailResponse(
+                transaction.getId(),
+                payment.getOrderDescription(),
+                transaction.getTransactionMethod(),
+                transaction.getAmount(),
+                totalAmount,
+                participantCount,
+                payment.getOrderNumber(),
+                transaction.getTransactedAt(),
+                payment.getPaymentCategory(),
+                transaction.isIncludeInTotal()
+        );
+    }
 
     private YearMonth parseYearMonth(String yearMonthStr) {
         try {
@@ -93,6 +128,6 @@ public class ExpenseService {
                         ExpenseCategoryAmountDto::paymentCategory,
                         ExpenseCategoryAmountDto::amount
                 ));
-        }
     }
+}
 
