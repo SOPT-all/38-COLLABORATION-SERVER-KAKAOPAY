@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.sopt.kakaopay.domain.expense.code.ExpenseSuccessCode;
 import org.sopt.kakaopay.domain.expense.dto.response.ExpenseAnalysisResponse;
+import org.sopt.kakaopay.domain.expense.dto.response.ExpenseResponse;
 import org.sopt.kakaopay.domain.expense.service.ExpenseService;
 import org.sopt.kakaopay.global.response.BaseResponse;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,21 @@ import org.springframework.web.bind.annotation.RestController;
 public class ExpenseController {
 
     private final ExpenseService expenseService;
+
+    @Operation(summary = "지출 내역 조회", description = "연월 기준 일별 지출 내역과 요약 정보를 조회합니다.")
+    @ExpenseApiResponses.GetExpense
+    @GetMapping
+    public ResponseEntity<BaseResponse<ExpenseResponse>> getExpense(
+            @Parameter(description = "조회할 연월 (yyyy-MM 형식)", example = "2026-05")
+            @RequestParam String yearMonth
+    ) {
+        return ResponseEntity.ok(
+                BaseResponse.success(
+                        ExpenseSuccessCode.GET_EXPENSE,
+                        expenseService.getExpense(yearMonth)
+                )
+        );
+    }
 
     @Operation(summary = "상세 소비 분석 조회", description = "연월 기준 카테고리별 당월/전월 누적 지출을 조회합니다.")
     @ExpenseApiResponses.GetExpenseAnalysis

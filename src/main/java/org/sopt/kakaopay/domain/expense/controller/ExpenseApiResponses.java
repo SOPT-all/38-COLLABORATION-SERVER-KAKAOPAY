@@ -17,6 +17,18 @@ public final class ExpenseApiResponses {
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)
     @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "지출 내역 조회 성공"),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "yearMonth 형식이 올바르지 않습니다.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
+    public @interface GetExpense {}
+
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @ApiResponses({
             @ApiResponse(responseCode = "200", description = "상세 소비 분석 조회 성공"),
             @ApiResponse(
                     responseCode = "400",
@@ -29,7 +41,6 @@ public final class ExpenseApiResponses {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))
             )
     })
-
     public @interface GetExpenseAnalysis {}
 
 }
