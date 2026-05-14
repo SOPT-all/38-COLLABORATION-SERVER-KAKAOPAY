@@ -8,6 +8,7 @@ import org.sopt.kakaopay.domain.expense.dto.response.ExpenseCategoryResponse;
 import org.sopt.kakaopay.domain.expense.enums.PaymentCategory;
 import org.sopt.kakaopay.domain.expense.repository.PaymentRepository;
 import org.sopt.kakaopay.global.exception.BusinessException;
+import org.sopt.kakaopay.domain.expense.repository.TransactionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,11 +17,14 @@ import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import java.time.LocalDate;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ExpenseService {
     private final PaymentRepository paymentRepository;
+    private final TransactionRepository transactionRepository;
 
     public ExpenseAnalysisResponse getExpenseAnalysis(String yearMonthStr) {
         YearMonth yearMonth = parseYearMonth(yearMonthStr);
@@ -78,7 +82,6 @@ public class ExpenseService {
                 .build();
     }
 
-
     private YearMonth parseYearMonth(String yearMonthStr) {
         try {
             return YearMonth.parse(yearMonthStr);
@@ -88,11 +91,14 @@ public class ExpenseService {
     }
 
     private Map<PaymentCategory, Long> toCategoryAmountMap(List<ExpenseCategoryAmountDto> dtos) {
-        return dtos.stream()
-                .collect(Collectors.toMap(
-                        ExpenseCategoryAmountDto::paymentCategory,
-                        ExpenseCategoryAmountDto::amount
-                ));
-        }
+        return dtos.stream().collect(Collectors.toMap(ExpenseCategoryAmountDto::paymentCategory, ExpenseCategoryAmountDto::amount));
     }
+
+    public Long getMonthlyTotalExpense() {
+        YearMonth currentMonth = YearMonth.now();
+        LocalDateTime startDate = currentMonth.atDay(1).atStartOfDay();
+        LocalDateTime endDate = currentMonth.atEndOfMonth().plusDays(1).atStartOfDay();
+        return transactionRepository.sumMonthlyExpense(startDate, endDate);
+    }
+}
 

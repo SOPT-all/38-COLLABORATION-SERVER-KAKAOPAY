@@ -31,6 +31,7 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testAnnotationProcessor 'org.projectlombok:lombok'
+    implementation 'me.paulschwarz:springboot4-dotenv:5.1.0'
 }
 
 tasks.named('test') {
