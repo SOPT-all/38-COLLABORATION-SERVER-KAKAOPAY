@@ -31,7 +31,7 @@ public class Payment {
     @Column(nullable = false)
     private String orderDescription;
 
-    @Column(nullable = false, length = 50)
+    @Column(length = 50)
     private String orderNumber;
 
     @Builder
