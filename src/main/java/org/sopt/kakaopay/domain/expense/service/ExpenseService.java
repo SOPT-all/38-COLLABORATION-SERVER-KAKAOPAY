@@ -109,6 +109,9 @@ public class ExpenseService {
                                     t.getTransactionType(),
                                     t.getTransactionMethod(),
                                     resolveTransactionName(t, paymentMap, transferMap),
+                                    t.getTransactionType() == TransactionType.PAYMENT
+                                            ? paymentMap.get(t.getId()).getPaymentCategory()
+                                            : null,
                                     toSignedAmount(t),
                                     t.getTransactionType() == TransactionType.TRANSFER_RECEIVE ? null : t.isIncludeInTotal()
                             ))
