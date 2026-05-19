@@ -1,5 +1,6 @@
 package org.sopt.kakaopay.domain.expense.dto.response;
 
+import org.sopt.kakaopay.domain.expense.enums.PaymentCategory;
 import org.sopt.kakaopay.domain.expense.enums.TransactionMethod;
 import org.sopt.kakaopay.domain.expense.enums.TransactionType;
 
@@ -8,6 +9,7 @@ public record TransactionDetailResponse(
         TransactionType transactionType,
         TransactionMethod transactionMethod,
         String transactionName,
+        PaymentCategory category,
         Long amount,
         Boolean includeInTotal
 ) {
